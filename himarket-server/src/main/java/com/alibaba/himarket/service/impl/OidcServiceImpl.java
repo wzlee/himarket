@@ -374,15 +374,18 @@ public class OidcServiceImpl implements OidcService {
         String email = Objects.toString(emailObj, null);
         if (Strings.isBlank(userId) || Strings.isBlank(userName)) {
             throw new BusinessException(
-                    ErrorCode.INVALID_REQUEST, "Missing user ID or user name in ID Token");
+                    ErrorCode.INVALID_REQUEST,
+                    "Missing user ID or user name in OIDC user info, check the identity mapping"
+                            + " fields of the OIDC provider");
         }
 
         // Reuse existing developer or create new
         DeveloperResult existing =
                 developerService.getExternalDeveloper(config.getProvider(), userId);
         if (existing != null) {
-            // Update avatar URL on each login
-            developerService.updateExternalDeveloperAvatar(config.getProvider(), userId, avatarUrl);
+            // Sync avatar URL and email on each login
+            developerService.updateExternalDeveloperProfile(
+                    config.getProvider(), userId, avatarUrl, email);
             return existing.getDeveloperId();
         }
 

@@ -270,7 +270,8 @@ public class OAuth2ServiceImpl implements OAuth2Service {
         DeveloperResult existing =
                 developerService.getExternalDeveloper(config.getProvider(), userId);
         if (existing != null) {
-            developerService.updateExternalDeveloperAvatar(config.getProvider(), userId, avatarUrl);
+            developerService.updateExternalDeveloperProfile(
+                    config.getProvider(), userId, avatarUrl, null);
             return existing.getDeveloperId();
         }
 
